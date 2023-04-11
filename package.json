@@ -1,0 +1,39 @@
+{
+  "name": "buffer-aead",
+  "version": "0.1.0",
+  "description": "Buffer encryption, using aead (authenticated encryption with associated data), powered by strong crypto algorithms.",
+  "contributors": [
+    {
+      "name": "mark-herrmann",
+      "email": "github@markherrmann.de"
+    }
+  ],
+  "private": false,
+  "main": "build/lib/index.js",
+  "types": "build/lib/index.d.ts",
+  "author": "Mark Herrmann (mark-herrmann)",
+  "bugs": {
+    "url": "https://github.com/tomatencrypt/buffer-aead/issues"
+  },
+  "homepage": "https://github.com/tomatencrypt/buffer-aead#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "assertthat": "6.5.2",
+    "roboter": "13.2.1"
+  },
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tomatencrypt/buffer-aead.git"
+  },
+  "keywords": [
+    "encryption",
+    "buffer",
+    "aead",
+    "aesgcm",
+    "aesctrhmac",
+    "xchacha20poly1305",
+    "crypto"
+  ],
+  "license": "MIT"
+}
