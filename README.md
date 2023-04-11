@@ -10,7 +10,7 @@ npm i buffer-aead
 ## Supported aead algorithms/suites
 * AES-256-CTR & HMAC (not recommended)
 * AES-256-GCM (default)
-* XChaCha-Poly1305
+* XChaCha20-Poly1305
 
 ## Usage
 
