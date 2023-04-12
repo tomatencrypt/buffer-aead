@@ -1,5 +1,6 @@
 import Aead from '../types/Aead';
 import AeadSpecifier from 'lib/types/AeadSpecifier';
+import aesctrhmac from './aesctrhmac';
 import aesgcm from './aesgcm';
 import DecryptionInput from '../types/DecryptionInput';
 import EncryptionInput from '../types/EncryptionInput';
@@ -10,8 +11,7 @@ const defaultAead = 'aesgcm';
 const aeads: Record<AeadSpecifier, Aead> = {
   aesgcm,
 
-  // TODO [2023-04-30]: use aesctrhmac instead
-  aesctrhmac: aesgcm,
+  aesctrhmac,
 
   // TODO [2023-04-30]: use xchacha20poly1305 instead
   xchacha20poly1305: aesgcm
