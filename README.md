@@ -8,7 +8,7 @@ npm i buffer-aead
 ```
 
 ## Supported aead algorithms/suites
-* AES-256-CTR & HMAC (not recommended)
+* AES-256-CTR & HMAC-SHA256 (not recommended)
 * AES-256-GCM (default)
 * XChaCha20-Poly1305
 
@@ -131,6 +131,17 @@ const nonce = nonceGen('xchacha20poy1305');
 ```
 
 ## Inputs/Outputs
+
+### Buffer
+nodejs Buffer with following lengths (in bytes):
+* nonce
+  * AES-256-GCM: 12
+  * AES-256-CTR-HMAC-SHA256: 16
+  * XChaCha20-Poly1305: 24
+* key
+  * AES-256-GCM: 32
+  * AES-256-CTR-HMAC-SHA256: 64 (first half used for AES-CTR, second half used for HMAC)
+  * XChaCha20-Poly1305: 32
 
 ### Aead
 string (`'aesgcm'`, `'aesctrhmac'` or `'xchacha20poly1305'`)
