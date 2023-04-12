@@ -1,3 +1,9 @@
 {
-  "extends": "es/node"
+  "extends": "es/node",
+  "rules": {
+    "padding-line-between-statements": [
+      "error",
+      { "blankLine": "any", "prev": "*", "next": "*" }
+    ]
+  }
 }
