@@ -14,11 +14,11 @@ const encrypt = (input: EncryptionInput): EncryptionOutput => {
   const nonce = input.nonce ?? nonceGen();
   const additionalData = input.additionalData ?? Buffer.alloc(0);
 
-  const cipher = crypto.createCipheriv(algorithm, key, nonce);
-  cipher.setAAD(additionalData);
+  const encrypter = crypto.createCipheriv(algorithm, key, nonce);
+  encrypter.setAAD(additionalData);
 
-  const ciphertext = Buffer.concat([ cipher.update(input.data), cipher.final() ]);
-  const authTag = cipher.getAuthTag();
+  const ciphertext = Buffer.concat([ encrypter.update(input.data), encrypter.final() ]);
+  const authTag = encrypter.getAuthTag();
 
   return { key, nonce, ciphertext, authTag };
 };
@@ -27,11 +27,11 @@ const decrypt = (input: DecryptionInput): Buffer => {
   const { ciphertext, authTag, key, nonce } = input;
   const additionalData = input.additionalData ?? Buffer.alloc(0);
 
-  const decipher = crypto.createDecipheriv(algorithm, key, nonce);
-  decipher.setAAD(additionalData);
-  decipher.setAuthTag(authTag);
+  const decrypter = crypto.createDecipheriv(algorithm, key, nonce);
+  decrypter.setAAD(additionalData);
+  decrypter.setAuthTag(authTag);
 
-  return Buffer.concat([ decipher.update(ciphertext), decipher.final() ]);
+  return Buffer.concat([ decrypter.update(ciphertext), decrypter.final() ]);
 };
 
 const aesgcm: Aead = { keyGen, nonceGen, encrypt, decrypt };
