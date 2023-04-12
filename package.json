@@ -18,8 +18,10 @@
   "homepage": "https://github.com/tomatencrypt/buffer-aead#readme",
   "dependencies": {},
   "devDependencies": {
+    "@types/sinon": "10.0.13",
     "assertthat": "6.5.2",
-    "roboter": "13.2.1"
+    "roboter": "13.2.1",
+    "sinon": "15.0.3"
   },
   "scripts": {},
   "repository": {
