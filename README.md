@@ -132,7 +132,7 @@ const nonce = nonceGen('xchacha20poy1305');
 
 ## Inputs/Outputs
 
-### AEAD
+### Aead
 string (`'aesgcm'`, `'aesctrhmac'` or `'xchacha20poly1305'`)
 
 ### EncryptionInput
@@ -140,23 +140,21 @@ string (`'aesgcm'`, `'aesctrhmac'` or `'xchacha20poly1305'`)
 * `key`: Buffer (optional)
 * `nonce`: Buffer (optional)
 * `additionalData`: Buffer (optional)
-* `aead`: AEAD (optional)
+* `aead`: Aead (optional)
 
 ### EncryptionOutput
-* `ciphertext`: Buffer
-* `authTag`: Buffer
 * `key`: Buffer
 * `nonce`: Buffer
-* `additionalData`: Buffer or null
-* `aead`: AEAD
+* `ciphertext`: Buffer
+* `authTag`: Buffer
 
 ### DecryptionInput
-* `ciphertext`: Buffer
-* `authTag`: Buffer
 * `key`: Buffer
 * `nonce`: Buffer
+* `ciphertext`: Buffer
+* `authTag`: Buffer
 * `additionalData`: Buffer (optional)
-* `aead`: AEAD (optional)
+* `aead`: Aead (optional)
 
 ## Development
 
