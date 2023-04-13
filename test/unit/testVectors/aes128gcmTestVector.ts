@@ -1,6 +1,6 @@
+// Official test vector from https://luca-giuzzi.unibs.it/corsi/Support/papers-cryptography/gcm-spec.pdf
+// Section B; Test Case 4
 const aes128gcmTestVector = {
-  // Official test vector from https://luca-giuzzi.unibs.it/corsi/Support/papers-cryptography/gcm-spec.pdf
-  // Section B; Test Case 4
   key: Buffer.from('feffe9928665731c6d6a8f9467308308', 'hex'),
   nonce: Buffer.from('cafebabefacedbaddecaf888', 'hex'),
   data: Buffer.from(
