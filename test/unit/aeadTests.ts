@@ -1,6 +1,10 @@
+import aes128gcmTestVector from './testVectors/aes128gcmTestVector';
+import aes192gcmTestVector from './testVectors/aes192gcmTestVector';
 import aes256gcmTestVector from './testVectors/aes256gcmTestVector';
 import aesCtrHmacTestVector from './testVectors/aesCtrHmacTestVector';
 import { assert } from 'assertthat';
+import BufferAeadAes128Gcm from '../../lib/aead/aesgcm/BufferAeadAes128Gcm';
+import BufferAeadAes192Gcm from '../../lib/aead/aesgcm/BufferAeadAes192Gcm';
 import BufferAeadAes256Gcm from '../../lib/aead/aesgcm/BufferAeadAes256Gcm';
 import BufferAeadAesCtrHmac from '../../lib/aead/aesctrhmac/BufferAeadAesCtrHmac';
 import BufferAeadType from '../../lib/types/BufferAeadType';
@@ -21,6 +25,14 @@ const tamperBuffer = (source: Buffer): Buffer => {
 };
 
 const aeadDefinitions: Record<BufferAeadType, TestDefinition> = {
+  'aes-128-gcm': {
+    aead: new BufferAeadAes128Gcm(),
+    testVector: aes128gcmTestVector
+  },
+  'aes-192-gcm': {
+    aead: new BufferAeadAes192Gcm(),
+    testVector: aes192gcmTestVector
+  },
   'aes-256-gcm': {
     aead: new BufferAeadAes256Gcm(),
     testVector: aes256gcmTestVector
@@ -31,14 +43,6 @@ const aeadDefinitions: Record<BufferAeadType, TestDefinition> = {
   },
 
   // TODO [2023-04-30]: replace this with real definitions when implemented
-  'aes-128-gcm': {
-    aead: new BufferAeadAes256Gcm(),
-    testVector: aes256gcmTestVector
-  },
-  'aes-192-gcm': {
-    aead: new BufferAeadAes256Gcm(),
-    testVector: aes256gcmTestVector
-  },
   'aes-128-ccm': {
     aead: new BufferAeadAes256Gcm(),
     testVector: aes256gcmTestVector
@@ -69,7 +73,7 @@ const ensureRealRandom = (): void => {
 suite('AEADs', (): void => {
   for (const [ aeadName, definition ] of Object.entries(aeadDefinitions)) {
     // TODO [2023-04-30]: remove this when all aeads implemented
-    if (aeadName !== 'aes-256-gcm' && aeadName !== 'aes-ctrhmac') {
+    if (!aeadName.endsWith('-gcm') && aeadName !== 'aes-ctrhmac') {
       return;
     }
 
