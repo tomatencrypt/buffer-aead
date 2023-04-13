@@ -144,6 +144,7 @@ nodejs Buffer with various lengths
 ___
 
 ## Further readings
+* nodejs crypto api: https://nodejs.org/api/crypto.html
 * AEAD: https://en.wikipedia.org/wiki/Authenticated_encryption
 * AES: https://en.wikipedia.org/wiki/Advanced_Encryption_Standard
 * GCM: https://en.wikipedia.org/wiki/Galois/Counter_Mode

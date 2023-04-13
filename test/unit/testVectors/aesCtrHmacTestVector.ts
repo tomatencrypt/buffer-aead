@@ -10,6 +10,7 @@ const aesCtrHmacTestVector = {
   ciphertext: Buffer.from('145AD01DBF824EC7560863DC71E3E0C0', 'hex'),
 
   // Not part of the official vector. Defined additionalData and tested authTag manually, before it was hard coded here
+  // tested here: https://www.liavaag.org/English/SHA-Generator/HMAC/
   additionalData: Buffer.from('010203', 'hex'),
   authTag: Buffer.from('5E788FDB1290D3E4872BAE4BE3921D77D4E1AD72AEF06525649E10D7A8C03F90', 'hex')
 };
