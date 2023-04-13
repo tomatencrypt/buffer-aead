@@ -1,44 +1,63 @@
-import AeadSpecifier from '../../../lib/types/AeadSpecifier';
+import aes256gcmTestVector from './testVectors/aes256gcmTestVector';
+import aesCtrHmacTestVector from './testVectors/aesCtrHmacTestVector';
 import { assert } from 'assertthat';
+import BufferAeadAes256Gcm from '../../lib/aead/aesgcm/BufferAeadAes256Gcm';
+import BufferAeadAesCtrHmac from '../../lib/aead/aesctrhmac/BufferAeadAesCtrHmac';
+import BufferAeadType from '../../lib/types/BufferAeadType';
 import crypto from 'crypto';
 import sinon from 'sinon';
-import { tamperBuffer } from '../helpers';
-import { aeads, defaultAead, wrapper } from '../../../lib/aead/wrapper';
+import TestDefinition from './types/TestDefinition';
+import TestVector from './types/TestVector';
 
-const testVectors: Record<AeadSpecifier, Record<string, Buffer>> = {
-  aesgcm: {
-    // Official test vector from https://luca-giuzzi.unibs.it/corsi/Support/papers-cryptography/gcm-spec.pdf
-    // Section B; Test Case 16
-    key: Buffer.from('feffe9928665731c6d6a8f9467308308feffe9928665731c6d6a8f9467308308', 'hex'),
-    nonce: Buffer.from('cafebabefacedbaddecaf888', 'hex'),
-    data: Buffer.from(
-      'd9313225f88406e5a55909c5aff5269a86a7a9531534f7da2e4c303d8a318a721c3c0c95956809532fcf0e2449a6b525b16aedf5aa0de657ba637b39',
-      'hex'
-    ),
-    additionalData: Buffer.from('feedfacedeadbeeffeedfacedeadbeefabaddad2', 'hex'),
-    ciphertext: Buffer.from(
-      '522dc1f099567d07f47f37a32a84427d643a8cdcbfe5c0c97598a2bd2555d1aa8cb08e48590dbb3da7b08b1056828838c5f61e6393ba7a0abcc9f662',
-      'hex'
-    ),
-    authTag: Buffer.from('76fc6ece0f4e1768cddf8853bb2d551b', 'hex')
-  },
+// Flips last bit (least significant bit) of the buffer
+const tamperBuffer = (source: Buffer): Buffer => {
+  const tampered = Buffer.alloc(source.length);
+  source.copy(tampered);
 
-  aesctrhmac: {
-    // Official test vector from https://datatracker.ietf.org/doc/html/rfc3686.html#page-9
-    // Test Vector #7
-    key: Buffer.from('776BEFF2851DB06F4C8A0542C8696F6C6A81AF1EEC96B4D37FC1D689E6C1C104776BEFF2851DB06F4C8A0542C8696F6C6A81AF1EEC96B4D37FC1D689E6C1C104', 'hex'),
-    nonce: Buffer.from('00000060DB5672C97AA8F0B200000001', 'hex'),
-    data: Buffer.from('53696E676C6520626C6F636B206D7367', 'hex'),
-    ciphertext: Buffer.from('145AD01DBF824EC7560863DC71E3E0C0', 'hex'),
+  // eslint-disable-next-line no-bitwise
+  tampered[source.length - 1] ^= 1;
 
-    // Defined additionalData and tested authTag manually, before it was hard coded here
-    additionalData: Buffer.from('010203', 'hex'),
-    authTag: Buffer.from('5E788FDB1290D3E4872BAE4BE3921D77D4E1AD72AEF06525649E10D7A8C03F90', 'hex')
-  },
-  xchacha20poly1305: {}
+  return tampered;
 };
 
-const mockRandom = (testVector: Record<string, Buffer>): void => {
+const aeadDefinitions: Record<BufferAeadType, TestDefinition> = {
+  'aes-256-gcm': {
+    aead: new BufferAeadAes256Gcm(),
+    testVector: aes256gcmTestVector
+  },
+  'aes-ctrhmac': {
+    aead: new BufferAeadAesCtrHmac(),
+    testVector: aesCtrHmacTestVector
+  },
+
+  // TODO [2023-04-30]: replace this with real definitions when implemented
+  'aes-128-gcm': {
+    aead: new BufferAeadAes256Gcm(),
+    testVector: aes256gcmTestVector
+  },
+  'aes-192-gcm': {
+    aead: new BufferAeadAes256Gcm(),
+    testVector: aes256gcmTestVector
+  },
+  'aes-128-ccm': {
+    aead: new BufferAeadAes256Gcm(),
+    testVector: aes256gcmTestVector
+  },
+  'aes-192-ccm': {
+    aead: new BufferAeadAes256Gcm(),
+    testVector: aes256gcmTestVector
+  },
+  'aes-256-ccm': {
+    aead: new BufferAeadAes256Gcm(),
+    testVector: aes256gcmTestVector
+  },
+  'xchacha20-poly1305': {
+    aead: new BufferAeadAes256Gcm(),
+    testVector: aes256gcmTestVector
+  }
+};
+
+const mockRandom = (testVector: TestVector): void => {
   sinon.restore();
   sinon.replace(crypto, 'randomBytes', (size: number): Buffer => size === testVector.nonce.length ? testVector.nonce : testVector.key);
 };
@@ -48,48 +67,15 @@ const ensureRealRandom = (): void => {
 };
 
 suite('AEADs', (): void => {
-  for (const [ aeadName, aead ] of Object.entries(aeads)) {
+  for (const [ aeadName, definition ] of Object.entries(aeadDefinitions)) {
     // TODO [2023-04-30]: remove this when all aeads implemented
-    if (aeadName === 'xchacha20poly1305') {
+    if (aeadName !== 'aes-256-gcm' && aeadName !== 'aes-ctrhmac') {
       return;
     }
 
+    const { aead, testVector } = definition;
+
     suite(`AEAD: ${aeadName}`, (): void => {
-      const testVector = testVectors[aeadName as AeadSpecifier];
-
-      suite('wrapper', (): void => {
-        if (aeadName === defaultAead) {
-          test(`uses ${defaultAead} as default.`, async (): Promise<void> => {
-            mockRandom(testVector);
-
-            const key = wrapper.keyGen();
-            const nonce = wrapper.nonceGen();
-            const { ciphertext, authTag } = wrapper.encrypt({ data: testVector.data });
-            const decrypted = wrapper.decrypt({ key, nonce, ciphertext, authTag });
-
-            assert.that(key).is.equalTo(testVector.key);
-            assert.that(nonce).is.equalTo(testVector.nonce);
-            assert.that(ciphertext).is.equalTo(testVector.ciphertext);
-            assert.that(decrypted).is.equalTo(testVector.data);
-          });
-        }
-
-        test(`uses ${aeadName} if specified.`, async (): Promise<void> => {
-          mockRandom(testVector);
-          const specifiedAead = aeadName as AeadSpecifier;
-
-          const key = wrapper.keyGen(specifiedAead);
-          const nonce = wrapper.nonceGen(specifiedAead);
-          const { ciphertext, authTag } = wrapper.encrypt({ data: testVector.data, aead: specifiedAead });
-          const decrypted = wrapper.decrypt({ key, nonce, ciphertext, authTag, aead: specifiedAead });
-
-          assert.that(key).is.equalTo(testVector.key);
-          assert.that(nonce).is.equalTo(testVector.nonce);
-          assert.that(ciphertext).is.equalTo(testVector.ciphertext);
-          assert.that(decrypted).is.equalTo(testVector.data);
-        });
-      });
-
       suite('generations', (): void => {
         test('returns correct key, using mocked random.', async (): Promise<void> => {
           mockRandom(testVector);
@@ -223,7 +209,7 @@ suite('AEADs', (): void => {
       });
 
       suite('authentication failueres', (): void => {
-        const expectedErrorText = 'Unsupported state or unable to authenticate data';
+        const expectedErrorText = 'Unauthentic data';
 
         test('fails to decrypt due invalid ciphertext.', async (): Promise<void> => {
           const { key, nonce, additionalData, ciphertext, authTag } = testVector;
