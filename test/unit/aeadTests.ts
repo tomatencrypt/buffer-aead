@@ -1,10 +1,3 @@
-import aes128ccmTestVector from './testVectors/aes128ccmTestVector';
-import aes128gcmTestVector from './testVectors/aes128gcmTestVector';
-import aes192ccmTestVector from './testVectors/aes192ccmTestVector';
-import aes192gcmTestVector from './testVectors/aes192gcmTestVector';
-import aes256ccmTestVector from './testVectors/aes256ccmTestVector';
-import aes256gcmTestVector from './testVectors/aes256gcmTestVector';
-import aesCtrHmacTestVector from './testVectors/aesCtrHmacTestVector';
 import { assert } from 'assertthat';
 import BufferAeadAes128Ccm from '../../lib/aead/BufferAeadAes128Ccm';
 import BufferAeadAes128Gcm from '../../lib/aead/BufferAeadAes128Gcm';
@@ -13,11 +6,19 @@ import BufferAeadAes192Gcm from '../../lib/aead/BufferAeadAes192Gcm';
 import BufferAeadAes256Ccm from '../../lib/aead/BufferAeadAes256Ccm';
 import BufferAeadAes256Gcm from '../../lib/aead/BufferAeadAes256Gcm';
 import BufferAeadAesCtrHmac from '../../lib/aead/BufferAeadAesCtrHmac';
+import BufferAeadChacha20Poly1305 from '../../lib/aead/BufferAeadChacha20Poly1305';
 import BufferAeadType from '../../lib/types/BufferAeadType';
 import crypto from 'crypto';
 import sinon from 'sinon';
 import TestDefinition from './types/TestDefinition';
 import TestVector from './types/TestVector';
+import {
+  aes128ccmTestVector, aes128gcmTestVector,
+  aes192ccmTestVector, aes192gcmTestVector,
+  aes256ccmTestVector, aes256gcmTestVector,
+  aesCtrHmacTestVector,
+  chacha20poly1305TestVector
+} from './testVectors';
 
 // Flips last bit (least significant bit) of the buffer
 const tamperBuffer = (source: Buffer): Buffer => {
@@ -59,12 +60,12 @@ const aeadDefinitions: Record<BufferAeadType, TestDefinition> = {
     aead: new BufferAeadAes256Ccm(),
     testVector: aes256ccmTestVector
   },
+  'chacha20-poly1305': {
+    aead: new BufferAeadChacha20Poly1305(),
+    testVector: chacha20poly1305TestVector
+  },
 
   // TODO [2023-04-30]: replace this with real definitions when implemented
-  'chacha20-poly1305': {
-    aead: new BufferAeadAes256Gcm(),
-    testVector: aes256gcmTestVector
-  },
   'xchacha20-poly1305': {
     aead: new BufferAeadAes256Gcm(),
     testVector: aes256gcmTestVector
@@ -83,7 +84,7 @@ const ensureRealRandom = (): void => {
 suite('AEADs', (): void => {
   for (const [ aeadName, definition ] of Object.entries(aeadDefinitions)) {
     // TODO [2023-04-30]: remove this when all aeads implemented
-    if (aeadName.endsWith('chacha20-poly1305')) {
+    if (aeadName === 'xchacha20-poly1305') {
       return;
     }
 
