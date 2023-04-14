@@ -1,5 +1,9 @@
 # buffer-aead
 
+[![npm package](https://nodei.co/npm/buffer-aead.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/buffer-aead/)
+
+[![npm](https://img.shields.io/npm/v/buffer-aead)](https://www.npmjs.com/package/buffer-aead) [![QA](https://github.com/tomatencrypt/buffer-aead/actions/workflows/qa.yml/badge.svg?branch=main)](https://github.com/tomatencrypt/buffer-aead/actions/workflows/qa.yml)
+
 Buffer encryption, using aead (authenticated encryption with associated data), powered by strong crypto algorithms, written in typescrypt
 
 ## install
@@ -12,7 +16,7 @@ ___
 ## Supported aead algorithms/suites
 * AES-256-CTR with HMAC-SHA256 (not recommended)
 * AES-GCM
-* AES-CCM
+* AES-CCM (plaintext limited to be less than 64 KiB)
 * ChaCha20-Poly1305
 * XChaCha20-Poly1305
 
@@ -38,10 +42,11 @@ Currently the following aead algorithms are supported
   * with 192 bit key size: `import { aes192gcm } from 'buffer-aead'`
   * with 256 bit key size: `import { aes256gcm } from 'buffer-aead'`
 * AES in CCM (Counter Mode with CBC-Mac)
+  Important: For this AEAD the plaintext is limtted to be less than 64 KiB (65536 bytes)
   * with 128 bit key size: `import { aes128ccm } from 'buffer-aead'`
   * with 192 bit key size: `import { aes192ccm } from 'buffer-aead'`
   * with 256 bit key size: `import { aes256ccm } from 'buffer-aead'`
-* AES in CTR (Counter Mode) with HMAC (SHA-256): `import { aesctrhmac } from 'buffer-aead'` (not recommended)
+* AES-256 in CTR (Counter Mode) with HMAC (SHA-256): `import { aesctrhmac } from 'buffer-aead'` (not recommended)
 * chacha20 with poly1305: `import { chacha20poly1305 } from 'buffer-aead'`
 * xchacha20 with poly1305: `import { xchacha20poly1305 } from 'buffer-aead'`
 
@@ -165,25 +170,28 @@ npm install
 ```
 
 ### QA
+```shell
+npm run qa
+```
 
-* including licenseCheck (reports `scss-parser` to be incompatible, which is a scss-parser bug)
-  ```shell
-  npx roboter qa
-  ```
-* excluding licenseCheck
-  ```shell
-  npx roboter analyze && npx roboter test && npx roboter deps
-  ```
-* only tests
-  ```shell
-  npx roboter test
-  ```
-* build
-  ```shell
-  npx roboter build
-  ```
-* release package \
-  `[this should be done by github actions]`
+### License Check
+(reports `scss-parser` to be incompatible, which is a scss-parser bug, due to invalid License declaration)
+```shell
+npm run licenseCheck
+```
+
+### Only Tests
+```shell
+npm run test
+```
+
+### Build
+```shell
+npm run build
+```
+
+### Release Package on npm
+`[this should be done by github actions]`
 
 ___
 

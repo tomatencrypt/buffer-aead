@@ -26,6 +26,9 @@
     "sinon": "15.0.3"
   },
   "scripts": {
+    "build": "npx roboter build",
+    "licenseCheck": "npx roboter license",
+    "qa": "npx roboter analyze && npx roboter test && npx roboter deps",
     "test": "npx roboter test"
   },
   "repository": {

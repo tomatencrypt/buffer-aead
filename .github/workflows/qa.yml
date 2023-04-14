@@ -23,4 +23,4 @@ jobs:
         npm install
     - name: Run roboter
       run: |
-        npx roboter analyze && npx roboter test && npx roboter deps
+        npm run qa
