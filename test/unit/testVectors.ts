@@ -90,7 +90,7 @@ const aes256gcmTestVector = {
 
 // Test vector for aes-256-ctr from https://datatracker.ietf.org/doc/html/rfc3686.html#page-9
 // Test Vector #7
-const aesCtrHmacTestVector = {
+const aesctrhmacTestVector = {
   key: Buffer.from('776BEFF2851DB06F4C8A0542C8696F6C6A81AF1EEC96B4D37FC1D689E6C1C104776BEFF2851DB06F4C8A0542C8696F6C6A81AF1EEC96B4D37FC1D689E6C1C104', 'hex'),
 
   // Counter Block (1), Nonce notation is wrong
@@ -105,7 +105,7 @@ const aesCtrHmacTestVector = {
   authTag: Buffer.from('5E788FDB1290D3E4872BAE4BE3921D77D4E1AD72AEF06525649E10D7A8C03F90', 'hex')
 };
 
-// Official test vector from https://datatracker.ietf.org/doc/html/draft-nir-cfrg-chacha20-poly1305#appendix-A.5
+// https://datatracker.ietf.org/doc/html/draft-nir-cfrg-chacha20-poly1305#appendix-A.5
 const chacha20poly1305TestVector = {
   key: Buffer.from('1c9240a5eb55d38af333888604f6b5f0473917c1402b80099dca5cbc207075c0', 'hex'),
   nonce: Buffer.from('000000000102030405060708', 'hex'),
@@ -127,10 +127,28 @@ const chacha20poly1305TestVector = {
   authTag: Buffer.from('eead9d67890cbb22392336fea1851f38', 'hex')
 };
 
+// https://datatracker.ietf.org/doc/html/draft-arciszewski-xchacha-03#appendix-A.3.1
+const xchacha20poly1305TestVector = {
+  key: Buffer.from('808182838485868788898a8b8c8d8e8f909192939495969798999a9b9c9d9e9f', 'hex'),
+  nonce: Buffer.from('404142434445464748494a4b4c4d4e4f5051525354555657', 'hex'),
+  data: Buffer.from(
+    '4c616469657320616e642047656e746c656d656e206f662074686520636c617373206f66202739393a204966204920636f756c64206f6666657220796f75206f6e6c7920' +
+    '6f6e652074697020666f7220746865206675747572652c2073756e73637265656e20776f756c642062652069742e',
+    'hex'
+  ),
+  additionalData: Buffer.from('50515253c0c1c2c3c4c5c6c7', 'hex'),
+  ciphertext: Buffer.from(
+    'bd6d179d3e83d43b9576579493c0e939572a1700252bfaccbed2902c21396cbb731c7f1b0b4aa6440bf3a82f4eda7e39ae64c6708c54c216cb96b72e1213b4522f8c9ba4' +
+    '0db5d945b11b69b982c1bb9e3f3fac2bc369488f76b2383565d3fff921f9664c97637da9768812f615c68b13b52e',
+    'hex'
+  ),
+  authTag: Buffer.from('c0875924c1c7987947deafd8780acf49', 'hex')
+};
+
 export {
   aes128ccmTestVector, aes128gcmTestVector,
   aes192ccmTestVector, aes192gcmTestVector,
   aes256ccmTestVector, aes256gcmTestVector,
-  aesCtrHmacTestVector,
-  chacha20poly1305TestVector
+  aesctrhmacTestVector,
+  chacha20poly1305TestVector, xchacha20poly1305TestVector
 };
