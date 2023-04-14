@@ -13,6 +13,7 @@ ___
 * AES-256-CTR with HMAC-SHA256 (not recommended)
 * AES-GCM
 * AES-CCM
+* ChaCha20-Poly1305
 * XChaCha20-Poly1305
 
 ___
@@ -41,6 +42,7 @@ Currently the following aead algorithms are supported
   * with 192 bit key size: `import { aes192ccm } from 'buffer-aead'`
   * with 256 bit key size: `import { aes256ccm } from 'buffer-aead'`
 * AES in CTR (Counter Mode) with HMAC (SHA-256): `import { aesctrhmac } from 'buffer-aead'` (not recommended)
+* chacha20 with poly1305: `import { chacha20poly1305 } from 'buffer-aead'`
 * xchacha20 with poly1305: `import { xchacha20poly1305 } from 'buffer-aead'`
 
 ### key/nonce generation
@@ -48,11 +50,11 @@ To simplify key/nonce generation, force correct length and prevent miss-use, the
 * `keyGen`: Returns a key, appropriate to the particular AEAD
 * `nonceGen`: Returns a nonce (number only used once, aka IV (Initial Vector)), appropriate to the particular AEAD
 
-#### Example, using xchacha20-poly1305
+#### Example, using chacha20-poly1305
 ```js
-import { xchacha20poly1305 } from 'buffer-aead';
-const key = xchacha20poly1305.keyGen();
-const nonce = xchacha20poly1305.nonceGen();
+import { chacha20poly1305 } from 'buffer-aead';
+const key = chacha20poly1305.keyGen();
+const nonce = chacha20poly1305.nonceGen();
 ```
 
 ### encrypt and decrypt
