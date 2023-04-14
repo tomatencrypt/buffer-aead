@@ -1,8 +1,8 @@
-import AbstractBufferAead from '../../aead/AbstractBufferAead';
+import AbstractBufferAead from './AbstractBufferAead';
 import crypto from 'crypto';
-import DecryptionInput from '../../types/DecryptionInput';
-import EncryptionInput from '../../types/EncryptionInput';
-import EncryptionOutput from '../../types/EncryptionOutput';
+import DecryptionInput from '../types/DecryptionInput';
+import EncryptionInput from '../types/EncryptionInput';
+import EncryptionOutput from '../types/EncryptionOutput';
 
 interface HmacSignInput {
   ciphertext: Buffer;

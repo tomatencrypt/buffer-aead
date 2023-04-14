@@ -1,4 +1,4 @@
-import AbstractBufferAeadAesGcm from './AbstractBufferAeadAesGcm';
+import AbstractBufferAeadAesGcm from './AbstractBufferAeadGcm';
 
 class BufferAeadAes256Gcm extends AbstractBufferAeadAesGcm {
   public constructor () {

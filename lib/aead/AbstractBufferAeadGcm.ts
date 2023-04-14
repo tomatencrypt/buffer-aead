@@ -1,19 +1,17 @@
-import AbstractBufferAead from '../AbstractBufferAead';
-import BufferAeadType from '../../types/BufferAeadType';
+import AbstractBufferAead from './AbstractBufferAead';
+import BufferAeadType from '../types/BufferAeadType';
 import crypto from 'crypto';
-import DecryptionInput from '../../types/DecryptionInput';
-import EncryptionInput from '../../types/EncryptionInput';
-import EncryptionOutput from '../../types/EncryptionOutput';
+import DecryptionInput from '../types/DecryptionInput';
+import EncryptionInput from '../types/EncryptionInput';
+import EncryptionOutput from '../types/EncryptionOutput';
 
-const authTagLength = 16;
-
-abstract class AbstractBufferAeadAesCcm extends AbstractBufferAead {
+abstract class AbstractBufferAeadGcm extends AbstractBufferAead {
   private readonly algorithm: BufferAeadType;
 
   public constructor (algorithm: BufferAeadType) {
     // eslint-disable-next-line prefer-named-capture-group
-    const keyLength = Number.parseInt(algorithm.replace(/^aes-(128|192|256)-ccm$/u, '$1'), 10) / 8;
-    const nonceLength = 13;
+    const keyLength = Number.parseInt(algorithm.replace(/^aes-(128|192|256)-gcm$/u, '$1'), 10) / 8;
+    const nonceLength = 12;
 
     super({ keyLength, nonceLength });
     this.algorithm = algorithm;
@@ -24,8 +22,8 @@ abstract class AbstractBufferAeadAesCcm extends AbstractBufferAead {
     const nonce = input.nonce ?? this.nonceGen();
     const additionalData = input.additionalData ?? Buffer.alloc(0);
 
-    const encrypter = crypto.createCipheriv(this.algorithm, key, nonce, { authTagLength } as any) as crypto.CipherCCM;
-    encrypter.setAAD(additionalData, { plaintextLength: input.data.length });
+    const encrypter = crypto.createCipheriv(this.algorithm, key, nonce) as crypto.CipherGCM;
+    encrypter.setAAD(additionalData);
 
     const ciphertext = Buffer.concat([ encrypter.update(input.data), encrypter.final() ]);
     const authTag = encrypter.getAuthTag();
@@ -37,8 +35,8 @@ abstract class AbstractBufferAeadAesCcm extends AbstractBufferAead {
     const { ciphertext, authTag, key, nonce } = input;
     const additionalData = input.additionalData ?? Buffer.alloc(0);
 
-    const decrypter = crypto.createDecipheriv(this.algorithm, key, nonce, { authTagLength } as any) as crypto.DecipherCCM;
-    decrypter.setAAD(additionalData, { plaintextLength: ciphertext.length });
+    const decrypter = crypto.createDecipheriv(this.algorithm, key, nonce) as crypto.DecipherGCM;
+    decrypter.setAAD(additionalData);
     decrypter.setAuthTag(authTag);
 
     try {
@@ -54,4 +52,4 @@ abstract class AbstractBufferAeadAesCcm extends AbstractBufferAead {
   }
 }
 
-export default AbstractBufferAeadAesCcm;
+export default AbstractBufferAeadGcm;

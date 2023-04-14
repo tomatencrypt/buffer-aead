@@ -6,13 +6,13 @@ import aes256ccmTestVector from './testVectors/aes256ccmTestVector';
 import aes256gcmTestVector from './testVectors/aes256gcmTestVector';
 import aesCtrHmacTestVector from './testVectors/aesCtrHmacTestVector';
 import { assert } from 'assertthat';
-import BufferAeadAes128Ccm from '../../lib/aead/aesccm/BufferAeadAes128Ccm';
-import BufferAeadAes128Gcm from '../../lib/aead/aesgcm/BufferAeadAes128Gcm';
-import BufferAeadAes192Ccm from '../../lib/aead/aesccm/BufferAeadAes192Ccm';
-import BufferAeadAes192Gcm from '../../lib/aead/aesgcm/BufferAeadAes192Gcm';
-import BufferAeadAes256Ccm from '../../lib/aead/aesccm/BufferAeadAes256Ccm';
-import BufferAeadAes256Gcm from '../../lib/aead/aesgcm/BufferAeadAes256Gcm';
-import BufferAeadAesCtrHmac from '../../lib/aead/aesctrhmac/BufferAeadAesCtrHmac';
+import BufferAeadAes128Ccm from '../../lib/aead/BufferAeadAes128Ccm';
+import BufferAeadAes128Gcm from '../../lib/aead/BufferAeadAes128Gcm';
+import BufferAeadAes192Ccm from '../../lib/aead/BufferAeadAes192Ccm';
+import BufferAeadAes192Gcm from '../../lib/aead/BufferAeadAes192Gcm';
+import BufferAeadAes256Ccm from '../../lib/aead/BufferAeadAes256Ccm';
+import BufferAeadAes256Gcm from '../../lib/aead/BufferAeadAes256Gcm';
+import BufferAeadAesCtrHmac from '../../lib/aead/BufferAeadAesCtrHmac';
 import BufferAeadType from '../../lib/types/BufferAeadType';
 import crypto from 'crypto';
 import sinon from 'sinon';
@@ -61,6 +61,10 @@ const aeadDefinitions: Record<BufferAeadType, TestDefinition> = {
   },
 
   // TODO [2023-04-30]: replace this with real definitions when implemented
+  'chacha20-poly1305': {
+    aead: new BufferAeadAes256Gcm(),
+    testVector: aes256gcmTestVector
+  },
   'xchacha20-poly1305': {
     aead: new BufferAeadAes256Gcm(),
     testVector: aes256gcmTestVector
@@ -79,7 +83,7 @@ const ensureRealRandom = (): void => {
 suite('AEADs', (): void => {
   for (const [ aeadName, definition ] of Object.entries(aeadDefinitions)) {
     // TODO [2023-04-30]: remove this when all aeads implemented
-    if (aeadName === 'xchacha20-poly1305') {
+    if (aeadName.endsWith('chacha20-poly1305')) {
       return;
     }
 
