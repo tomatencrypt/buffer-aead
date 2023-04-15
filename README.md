@@ -150,6 +150,19 @@ nodejs Buffer with various lengths
 
 ___
 
+## Used crypto libraries
+This package uses the following libraries for it's cryptography:
+
+### `node-crypto`
+nodejs provides a native crypto lib. Fast, secure, with great reputation.
+
+### `@stablelib/xchacha20`
+`@stablelib/xchacha20` provides ready to use xchacha20, but we only use hchacha from it,
+which is required to build xchacha20-poly1305 upon `node-crypto`'s chacha20-poly1305. \
+`@stablelib/xchacha20`'s hchacha implementation works and it is hard (if not imposiible) to implement hchacha **working but unsecure** and therefore it seems viable to use.  
+
+___
+
 ## Further readings
 * nodejs crypto api: https://nodejs.org/api/crypto.html
 * AEAD: https://en.wikipedia.org/wiki/Authenticated_encryption
