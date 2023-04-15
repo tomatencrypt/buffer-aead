@@ -25,6 +25,19 @@ abstract class AbstractBufferAead implements BufferAead {
   public abstract encrypt (input: EncryptionInput): EncryptionOutput;
 
   public abstract decrypt (input: DecryptionInput): Buffer;
+
+  protected static decryptIfAuthentic (decrypter: crypto.DecipherCCM | crypto.DecipherGCM, ciphertext: Buffer): Buffer {
+    try {
+      return Buffer.concat([ decrypter.update(ciphertext), decrypter.final() ]);
+    } catch (ex: unknown) {
+      const errMsg = ex ? (ex as Error).message : '';
+      if (errMsg === 'Unsupported state or unable to authenticate data') {
+        throw new Error('Unauthentic data');
+      } else {
+        throw ex;
+      }
+    }
+  }
 }
 
 export default AbstractBufferAead;

@@ -37,16 +37,7 @@ abstract class AbstractBufferAeadCcm extends AbstractBufferAead {
     decrypter.setAAD(additionalData, { plaintextLength: ciphertext.length });
     decrypter.setAuthTag(authTag);
 
-    try {
-      return Buffer.concat([ decrypter.update(ciphertext), decrypter.final() ]);
-    } catch (ex: unknown) {
-      const errMsg = ex ? (ex as Error).message : '';
-      if (errMsg === 'Unsupported state or unable to authenticate data') {
-        throw new Error('Unauthentic data');
-      } else {
-        throw ex;
-      }
-    }
+    return AbstractBufferAead.decryptIfAuthentic(decrypter, ciphertext);
   }
 }
 

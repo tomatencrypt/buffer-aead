@@ -8,11 +8,7 @@ import EncryptionOutput from '../types/EncryptionOutput';
 abstract class AbstractBufferAeadGcm extends AbstractBufferAead {
   private readonly algorithm: BufferAeadType;
 
-  public constructor (algorithm: BufferAeadType) {
-    // eslint-disable-next-line prefer-named-capture-group
-    const keyLength = Number.parseInt(algorithm.replace(/^aes-(128|192|256)-gcm$/u, '$1'), 10) / 8;
-    const nonceLength = 12;
-
+  public constructor ({ algorithm, keyLength, nonceLength }: { algorithm: BufferAeadType; keyLength: number; nonceLength: number }) {
     super({ keyLength, nonceLength });
     this.algorithm = algorithm;
   }
@@ -39,16 +35,7 @@ abstract class AbstractBufferAeadGcm extends AbstractBufferAead {
     decrypter.setAAD(additionalData);
     decrypter.setAuthTag(authTag);
 
-    try {
-      return Buffer.concat([ decrypter.update(ciphertext), decrypter.final() ]);
-    } catch (ex: unknown) {
-      const errMsg = ex ? (ex as Error).message : '';
-      if (errMsg === 'Unsupported state or unable to authenticate data') {
-        throw new Error('Unauthentic data');
-      } else {
-        throw ex;
-      }
-    }
+    return AbstractBufferAead.decryptIfAuthentic(decrypter, ciphertext);
   }
 }
 

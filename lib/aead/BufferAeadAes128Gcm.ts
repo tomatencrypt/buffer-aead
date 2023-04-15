@@ -2,7 +2,7 @@ import AbstractBufferAeadAesGcm from './AbstractBufferAeadGcm';
 
 class BufferAeadAes128Gcm extends AbstractBufferAeadAesGcm {
   public constructor () {
-    super('aes-128-gcm');
+    super({ algorithm: 'aes-128-gcm', keyLength: 16, nonceLength: 12 });
   }
 }
 
