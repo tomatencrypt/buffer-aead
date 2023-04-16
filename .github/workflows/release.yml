@@ -3,8 +3,7 @@ name: Release
 on:
   push:
     branches:
-      ## TODO: change to 'main' to enable workflow, when ready to release
-      - 'mainDUMMY' 
+      - 'main' 
     tags-ignore:
       - '**'
 
@@ -24,10 +23,10 @@ jobs:
         npm install
     - name: Run roboter
       run: |
-        npx roboter analyze && npx roboter test && npx roboter deps
+        npm run qa
     - name: Compile TypeScript
       run: |
-        npx roboter build
+        npm run build
     - name: Release
       uses: JS-DevTools/npm-publish@v1
       with:

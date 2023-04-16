@@ -16,12 +16,21 @@
     "url": "https://github.com/tomatencrypt/buffer-aead/issues"
   },
   "homepage": "https://github.com/tomatencrypt/buffer-aead#readme",
-  "dependencies": {},
-  "devDependencies": {
-    "assertthat": "6.5.2",
-    "roboter": "13.2.1"
+  "dependencies": {
+    "@stablelib/xchacha20": "1.0.1"
   },
-  "scripts": {},
+  "devDependencies": {
+    "@types/sinon": "10.0.13",
+    "assertthat": "6.5.2",
+    "roboter": "13.2.1",
+    "sinon": "15.0.3"
+  },
+  "scripts": {
+    "build": "npx roboter build",
+    "licenseCheck": "npx roboter license",
+    "qa": "npx roboter analyze && npx roboter test && npx roboter deps",
+    "test": "npx roboter test"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/tomatencrypt/buffer-aead.git"
